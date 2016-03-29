@@ -1,0 +1,19 @@
+{
+  "name": "serverless-cognito-oauth2",
+  "version": "0.0.1",
+  "description": "Serverless module dependencies",
+  "author": "me",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/"
+  },
+  "keywords": [],
+  "devDependencies": {},
+  "dependencies": {
+    "bluebird": "^3.3.4",
+    "request-promise": "^2.0.1",
+    "simple-oauth2": "^0.5.1"
+  }
+}

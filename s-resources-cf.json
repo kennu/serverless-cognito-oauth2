@@ -1,0 +1,12 @@
+{
+  "LambdaIamPolicyStatements": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cognito-sync:ListRecords",
+        "cognito-sync:UpdateRecords"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

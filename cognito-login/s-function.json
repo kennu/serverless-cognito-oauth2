@@ -1,0 +1,91 @@
+{
+  "name": "cognito-login",
+  "runtime": "nodejs",
+  "description": "Cognito OAuth2: Redirect browser to authentication flow",
+  "customName": false,
+  "customRole": false,
+  "handler": "cognito-login/handler.handler",
+  "timeout": 10,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": {
+      "allowOrigin": "*",
+      "allowHeaders": ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key"]
+    }
+  },
+  "endpoints": [
+    {
+      "path": "cognito/login",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "apiKeyRequired": false,
+      "requestParameters": {
+        "integration.request.querystring.local": "method.request.querystring.local"
+      },
+      "requestTemplates": {
+        "application/json": "{\"local\":\"$input.params('local')\"}"
+      },
+      "responses": {
+        "^400.*": {
+          "statusCode": "400",
+          "responseParameters": {
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+          }
+        },
+        "^401.*": {
+          "statusCode": "401",
+          "responseParameters": {
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+          }
+        },
+        "^404.*": {
+          "statusCode": "404",
+          "responseParameters": {
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+          }
+        },
+        "[^0-9].*": {
+          "statusCode": "500",
+          "responseParameters": {
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+          }
+        },
+        "default": {
+          "statusCode": "302",
+          "responseParameters": {
+            "method.response.header.Access-Control-Allow-Origin": "'*'",
+            "method.response.header.Location": "integration.response.body.Location"
+          },
+          "responseModels": {},
+          "responseTemplates": {
+            "application/json": "New location: $input.path('$.Location')"
+          }
+        }
+      }
+    }
+  ],
+  "events": [],
+  "environment": {
+    "AWS_REGION": "${AWS_REGION}",
+    "AWS_ACCOUNT_ID": "${AWS_ACCOUNT_ID}",
+    "COGNITO_POOL_ID": "${COGNITO_POOL_ID}",
+    "COGNITO_PROVIDER": "${COGNITO_PROVIDER}",
+    "COGNITO_PROFILE_DATASET": "${COGNITO_PROFILE_DATASET}",
+    "OAUTH2_CLIENT_ID": "${OAUTH2_CLIENT_ID}",
+    "OAUTH2_CLIENT_SECRET": "${OAUTH2_CLIENT_SECRET}",
+    "OAUTH2_SERVER": "${OAUTH2_SERVER}",
+    "OAUTH2_TOKEN_PATH": "${OAUTH2_TOKEN_PATH}",
+    "OAUTH2_AUTHORIZATION_PATH": "${OAUTH2_AUTHORIZATION_PATH}",
+    "OAUTH2_USERINFO_PATH": "${OAUTH2_USERINFO_PATH}",
+    "OAUTH2_CALLBACK_URI": "${OAUTH2_CALLBACK_URI}",
+    "OAUTH2_REDIRECT_URI": "${OAUTH2_REDIRECT_URI}",
+    "OAUTH2_LOCAL_REDIRECT_URI": "${OAUTH2_LOCAL_REDIRECT_URI}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

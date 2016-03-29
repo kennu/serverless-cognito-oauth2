@@ -1,0 +1,41 @@
+{
+  "name": "cognito-authorizer",
+  "runtime": "nodejs",
+  "description": "Cognito OAuth2: Custom Authorizer for API Gateway",
+  "customName": false,
+  "customRole": false,
+  "handler": "cognito-authorizer/handler.handler",
+  "timeout": 10,
+  "memorySize": 1024,
+  "authorizer": {
+    "type": "TOKEN",
+    "identitySource": "method.request.header.Authorization"
+  },
+  "custom": {
+    "excludePatterns": [],
+    "envVars": []
+  },
+  "endpoints": [
+  ],
+  "events": [],
+  "environment": {
+    "AWS_REGION": "${AWS_REGION}",
+    "AWS_ACCOUNT_ID": "${AWS_ACCOUNT_ID}",
+    "COGNITO_POOL_ID": "${COGNITO_POOL_ID}",
+    "COGNITO_PROVIDER": "${COGNITO_PROVIDER}",
+    "COGNITO_PROFILE_DATASET": "${COGNITO_PROFILE_DATASET}",
+    "OAUTH2_CLIENT_ID": "${OAUTH2_CLIENT_ID}",
+    "OAUTH2_CLIENT_SECRET": "${OAUTH2_CLIENT_SECRET}",
+    "OAUTH2_SERVER": "${OAUTH2_SERVER}",
+    "OAUTH2_TOKEN_PATH": "${OAUTH2_TOKEN_PATH}",
+    "OAUTH2_AUTHORIZATION_PATH": "${OAUTH2_AUTHORIZATION_PATH}",
+    "OAUTH2_USERINFO_PATH": "${OAUTH2_USERINFO_PATH}",
+    "OAUTH2_CALLBACK_URI": "${OAUTH2_CALLBACK_URI}",
+    "OAUTH2_REDIRECT_URI": "${OAUTH2_REDIRECT_URI}",
+    "OAUTH2_LOCAL_REDIRECT_URI": "${OAUTH2_LOCAL_REDIRECT_URI}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
