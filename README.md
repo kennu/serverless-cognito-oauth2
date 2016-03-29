@@ -37,6 +37,7 @@ Use these environment variables to control the authentication process:
     COGNITO_POOL_ID - Amazon Cognito Pool ID to use
     COGNITO_PROVIDER - Amazon Cognito OpenID Provider name to use
     COGNITO_PROFILE_DATASET - Amazon Cognito dataset to store user profile in
+    COGNITO_TRIGGER_TOPIC - Amazon SNS topic ARN to publish user logins in
     OAUTH2_CLIENT_ID - External OAuth2 provider Client ID
     OAUTH2_CLIENT_SECRET - External OAuth2 provider Client Secret
     OAUTH2_SERVER - External OAuth2 provider base URL
@@ -55,6 +56,7 @@ Here is a script template you can copy-paste to do it:
     sls variables set -k COGNITO_POOL_ID -v eu-west-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
     sls variables set -k COGNITO_PROVIDER -v xxx.auth0.com
     sls variables set -k COGNITO_PROFILE_DATASET -v profile
+    sls variables set -k COGNITO_TRIGGER_TOPIC -v arn:aws:sns:eu-west-1:1234567890:Xxx-Cognito-dev
     sls variables set -k OAUTH2_CLIENT_ID -v xxx
     sls variables set -k OAUTH2_CLIENT_SECRET -v xxx
     sls variables set -k OAUTH2_SERVER -v https://xxx.auth0.com
@@ -105,3 +107,18 @@ These paths are exposed by this module:
 * GET /cognito/login - Starts the login process (redirects the web browser to the OAuth2 provider)
 * GET /cognito/callback - Ends the login process (redirect back from the OAuth2 provider)
 * GET /cognito/me - Returns signed in profile information or 401 if not signed in
+
+## Cognito SNS trigger events
+
+If you configure an SNS topic ARN as COGNITO_TRIGGER_TOPIC, messages will be
+published whenever a user logs in. The SNS message will be JSON encoded and
+looks like this:
+
+    {
+      "identityId": "[cognito-identity-id]",
+      "profile": {
+        "email": "..."
+      }
+    }
+
+You can use these trigger events to synchronize your own user database.

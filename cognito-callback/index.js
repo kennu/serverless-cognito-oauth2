@@ -4,9 +4,11 @@ var AWS = require('aws-sdk');
 
 var cognitoIdentity = new AWS.CognitoIdentity({region:process.env.AWS_REGION});
 var cognitoSync = new AWS.CognitoSync({region:process.env.AWS_REGION});
+var sns = new AWS.SNS({region:process.env.AWS_REGION});
 
 Promise.promisifyAll(cognitoIdentity);
 Promise.promisifyAll(cognitoSync);
+Promise.promisifyAll(sns);
 
 var oauth2 = require('simple-oauth2')({
   clientID: process.env.OAUTH2_CLIENT_ID,
@@ -44,12 +46,12 @@ function getCognitoIdentity(idToken) {
   });
 }
 
-function updateCognitoProfile(principalId, profile) {
+function updateCognitoProfile(identityId, profile) {
   var syncSessionToken;
   var patches = [];
   return cognitoSync.listRecordsAsync({
     IdentityPoolId: process.env.COGNITO_POOL_ID,
-    IdentityId: principalId,
+    IdentityId: identityId,
     DatasetName: process.env.COGNITO_PROFILE_DATASET,
   })
   .then(function (response) {
@@ -74,7 +76,7 @@ function updateCognitoProfile(principalId, profile) {
     if (patches.length > 0) {
       return cognitoSync.updateRecordsAsync({
         IdentityPoolId: process.env.COGNITO_POOL_ID,
-        IdentityId: principalId,
+        IdentityId: identityId,
         DatasetName: process.env.COGNITO_PROFILE_DATASET,
         SyncSessionToken: syncSessionToken,
         RecordPatches: patches
@@ -87,11 +89,26 @@ function updateCognitoProfile(principalId, profile) {
 }
 
 /**
+ *
+ */
+function publishSnsTrigger(identityId, profile) {
+  if (process.env.COGNITO_TRIGGER_TOPIC) {
+    return sns.publishAsync({
+      TopicName: process.env.COGNITO_TRIGGER_TOPIC,
+      Message: JSON.stringify({
+        identityId: identityId,
+        profile: profile
+      })
+    });
+  }
+}
+
+/**
  * Handle a callback redirect return from OAuth2 server.
  */
 function oauth2Callback(code, accessToken, idToken, state) {
   var profile;
-  var principalId;
+  var identityId;
   var local = false;
 
   if (state && state == 'local') {
@@ -122,10 +139,13 @@ function oauth2Callback(code, accessToken, idToken, state) {
     console.log('Callback got profile', profile);
     return getCognitoIdentity(idToken);
   })
-  .then(function (aPrincipalId) {
-    principalId = aPrincipalId;
-    console.log('Callback got identity', principalId);
-    return updateCognitoProfile(principalId, profile);
+  .then(function (aIdentityId) {
+    identityId = aIdentityId;
+    console.log('Callback got identity', identityId);
+    return updateCognitoProfile(identityId, profile);
+  })
+  .then(function () {
+    return publishSnsTrigger(identityId, profile);
   })
   .then(function () {
     console.log('Callback updated cognito profile');
