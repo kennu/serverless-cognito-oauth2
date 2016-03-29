@@ -94,7 +94,7 @@ function updateCognitoProfile(identityId, profile) {
 function publishSnsTrigger(identityId, profile) {
   if (process.env.COGNITO_TRIGGER_TOPIC) {
     return sns.publishAsync({
-      TopicName: process.env.COGNITO_TRIGGER_TOPIC,
+      TopicArn: process.env.COGNITO_TRIGGER_TOPIC,
       Message: JSON.stringify({
         identityId: identityId,
         profile: profile
