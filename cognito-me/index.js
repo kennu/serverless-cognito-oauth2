@@ -10,9 +10,16 @@ function getMe(principalId) {
     DatasetName: process.env.COGNITO_PROFILE_DATASET
   })
   .then(function (response) {
-    var records = {};
+    var records = {
+      id: principalId.id
+    };
     response.Records.map(function (record) {
-      records[record.Key] = record.Value;
+      if (record.Key === 'id') {
+        // Don't overwrite id
+        records['_id'] = record.Value;
+      } else {
+        records[record.Key] = record.Value;
+      }
     });
     return records;
   });
