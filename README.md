@@ -1,3 +1,9 @@
+# NOTE: THIS IS AN OLD PROJECT
+
+This project was built for Serverless 0.x. Nowadays you should use Serverless 1.x or later.
+You may also find Amazon's built-in Cognito User Pool authorizers useful, they are available
+nowadays.
+
 # Serverless Cognito OAuth2
 Kenneth Falck <kennu@iki.fi> 2016
 
