@@ -12,8 +12,8 @@
   "keywords": [],
   "devDependencies": {},
   "dependencies": {
-    "bluebird": "^3.3.4",
-    "request-promise": "^2.0.1",
-    "simple-oauth2": "^0.5.1"
+    "bluebird": "3.7.1",
+    "request-promise": "2.0.1",
+    "simple-oauth2": "0.5.1"
   }
 }
