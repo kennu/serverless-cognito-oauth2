@@ -13,7 +13,7 @@
   "devDependencies": {},
   "dependencies": {
     "bluebird": "3.7.1",
-    "request-promise": "4.2.5",
+    "request-promise": "4.2.6",
     "simple-oauth2": "3.3.0"
   }
 }
